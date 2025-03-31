@@ -364,10 +364,205 @@ HINT 4: This challenge is difficult on purpose, so start watching the solution i
 Afterwards, test with your own test data!
 
 GOOD LUCK 😀
-*/
 
-const camelcase = (name) => {
-  const arr = name.split("_");
+
+// const camelcase = (name) => {
+//   const arr = name.split("_");
+// };
+
+// camelcase("underscore_case");
+
+
+// Higher order function
+
+const oneWord = function (str) {
+  return str.replaceAll(" ", "").toLowerCase();
 };
 
-camelcase("underscore_case");
+const upperFirstWord = function (str) {
+  const [first, ...others] = str.split(" ");
+  return [first.toUpperCase(), ...others].join(" ");
+};
+
+const transformer = function (str, fn) {
+  console.log(`Original string: ${str}`);
+  console.log(`Transformed string: ${fn(str)}`);
+
+  console.log(`Transformed by: ${fn.name}`);
+};
+
+transformer("javascript is the best language", oneWord);
+transformer("javaScript is the best language", upperFirstWord);
+
+
+const greet = function (greeting) {
+  return function (name) {
+    console.log(`Greetings: ${greeting}` + ` ${name}`);
+  };
+};
+
+const greet1 = (greeting) => {
+  return (name) => {
+    console.log(`Greetings: ${greeting}` + ` ${name}`);
+  };
+};
+
+const greeterHello = greet("Hello");
+
+greeterHello("Bhavya");
+greet("Hell0")("Bhavi");
+
+const lufthansa = {
+  airline: "Lufthansa",
+  iataCode: "LH",
+  bookings: [],
+  book(flightNum, name) {
+    console.log(
+      `${name} booked a seat on ${this.airline} flight ${this.iataCode}${flightNum}`
+    );
+
+    this.bookings.push({ flight: `${this.iataCode}${flightNum}`, name });
+  },
+};
+
+lufthansa.book("123", "John Doe");
+lufthansa.book("456", "Jane Smith");
+console.log(lufthansa.bookings);
+
+const eurowings = {
+  airline: "Eurowings",
+  iataCode: "EW",
+  bookings: [],
+};
+
+const book = lufthansa.book;
+
+// Does not work
+// book(23, "John Doe");
+
+// Call Method
+book.call(eurowings, 23, "John Doe");
+console.log(eurowings.bookings);
+
+book.call(lufthansa, 24, "John Doe");
+console.log(lufthansa.bookings);
+
+const swiss = {
+  airline: "Swiss Air Lines",
+  iataCode: "LX",
+  bookings: [],
+};
+
+book.call(swiss, 583, "Mary Cooper");
+console.log(swiss.bookings);
+
+// Apply But not usefull in modern js
+const flightData = [583, "Bhavya Rohilla"];
+book.apply(swiss, flightData);
+console.log(swiss);
+
+book.call(swiss, ...flightData);
+
+// Bind Method
+
+const bookEW = book.bind(eurowings);
+const bookLH = book.bind(lufthansa);
+const bookLX = book.bind(swiss);
+
+bookEW(345, "Jane Doe");
+
+const bookEW23 = bookEW.bind(eurowings, 23);
+
+bookEW23("Jane Doe");
+bookEW23("Marry Doe");
+
+// // With event listener
+// lufthansa.planes = 300;
+// lufthansa.buyPlane = function () {
+//   console.log(this);
+
+//   this.planes++;
+//   console.log(this.planes);
+// };
+// lufthansa.buyPlane();
+
+// document
+//   .querySelector(".buy")
+//   .addEventListener("click", lufthansa.buyPlane.bind(lufthansa));
+
+// Partial application
+
+const addTax = (rate, value) => value + value * rate;
+console.log(addTax(0.2, 100));
+
+const addVAT = addTax.bind(null, 0.23);
+// addVAT = value => value + value * 0.23;
+
+console.log(addVAT(100));
+console.log(addVAT(23));
+
+const addTax1 = (rate) => (value) => value + value * rate;
+
+const addVAT2 = addTax1(0.23);
+console.log(addVAT2(100));
+
+// Closures
+
+const secureBooking = function () {
+  let passengerCount = 0;
+
+  return function () {
+    passengerCount++;
+    console.log(`Securely booked for ${passengerCount} passengers.`);
+  };
+};
+
+const booker = secureBooking();
+booker();
+booker();
+booker();
+
+console.dir(booker);
+
+// Exapmle 1
+let f;
+
+const g = function () {
+  const a = 23;
+  f = function () {
+    console.log(a * 2);
+  };
+};
+
+const h = function () {
+  const b = 777;
+  f = function () {
+    console.log(b * 2);
+  };
+};
+
+g();
+f();
+console.dir(f);
+
+// Reassigning f function
+h();
+f();
+console.dir(f);
+
+// Exapmle 2
+
+const boardPassenger = function (n, wait) {
+  const perGroup = n / 3;
+
+  setTimeout(function () {
+    console.log(`We are now boarding all ${n} passengers`);
+    console.log(`There are 3 groups, each with ${perGroup} passenger`);
+  }, wait * 1000);
+
+  console.log(`Will start boarding in ${wait} seconds`);
+};
+
+const perGroup = 1000;
+boardPassenger(180, 5);
+*/
